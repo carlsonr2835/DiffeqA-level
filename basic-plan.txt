@@ -1,1 +1,21 @@
 hello this is a test
+
+getting input is half the battle:
+
+We are changing this project project to finding eigen vectors and eigen values and classifying the type of equilibrium solution
+
+
+we will have some kind of beefy function that will interpret all the input
+it will guide user over what to input when
+
+
+Vector of strings, each element is a term
+a vector of operands 
+
+
+in main, function that gets each term and assigns to member variables in the class.
+Class is templated? to account for decimals?
+
+
+
+
