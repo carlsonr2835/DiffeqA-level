@@ -18,4 +18,14 @@ Class is templated? to account for decimals?
 
 
 
+Ryan's jobs
+- eigenvalue finder (thanksgiving)
+- final solutions with initial conditions (before thanksgiving break ends)
+- make procedural code object oriented
+
+
+Maggie's jobs
+- eigenvector finder (done before thanksgiving)
+- classifying solution types (before review week)
+
 
