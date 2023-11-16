@@ -1,5 +1,5 @@
 /*
-Authors: Ryan Carlson, 
+Authors: Ryan Carlson & Marjorie Acheson
 Description: 
     This program prompts the user for a 2x2 matrix. It then finds the eigen values through det(A-λI) and solving this expression for the roots.
     It uses structs to hold the A matrix and the root values which are left expanded to avoid doing calculations with i. It prints and 
@@ -9,14 +9,17 @@ Description:
     handle initial conditions). We may create a user interface through SFML...or not.
 Log:
     - 11/13 Ryan created this file and coded it to solve for real eigenvalues
-    - 11/14 Ryan changed the unsimplified_root_finder to also find complex eigenvalues. Created formatted output for eigenvalues, added
-        a lot of comments including this one right here.
+    - 11/14 Ryan changed the unsimplified_root_finder to also find complex eigenvalues. Created formatted output for eigenvalues, added a lot of comments including this one right here.
+    - 11/15 Maggie created functions find_eigen_vectors and print_eigen_vectors. These only currently work in the case that both values are real. To do this I also created a templated Vector struct for printing ease. May delete this struct later seeing as it isn't a big contributor at the moment; Will determine once imaginary and repeated cases are added
 todo
 - make a really nice matrix formatter cause this is super uglay
 - it can't take in nonintegers. this must change eventually. This is what templates are for!!!
+- find vectors in cases that eigen values are imaginary and repeated
 */
 #include <iostream>
 #include <cmath> //sqrt
+#include <string>
+
 using namespace std;
 
 //a struct will hold the A matrix the user will input. This is for ease of fetching things.
@@ -37,6 +40,11 @@ struct Root {
     double rootLeftValue; //separate from right so that it's easy to print complex numbers
     double rootRightValue;
     bool isComplex;
+};
+
+template<class T>
+struct Vector {
+    T x,y;
 };
 
 //finds the two quantities on either side of the +-, keeps them separate, determines if complex
@@ -90,8 +98,33 @@ void print_eigen_values(Root r) { //this looks confusing but trust the process
     return;
 }
 
+template<typename T>
+Vector<T> find_eigen_vectors(T r, A& a) {
+    //hopefully cheekily finding eigenvectors using slickboy moves
+    //found y using the equation Ax + By = 0
+    //in this case, assuming x = 1, y = -A/B
+    Vector<T> result;
+    result.x = 1;
+    result.y = (-1)*(a.x2/(a.x1-r));
+    
+    return result;
+}
+
+template<typename T>
+void print_eigen_vectors(Vector<T> first, Vector<T> second, T left, T right) {
+    cout << "Eigen Value " << left << " has the vector: <";
+    cout << first.x << ", ";
+    cout << first.y << ">" << endl;
+
+    cout << "Eigen Value " << right << " has the vector: <";
+    cout << second.x << ", ";
+    cout << second.y << ">" << endl;
+}
+
+
 //smart user for now :))))
 //assumes following the format Y'=AY where A is a 2x2 matrix and there is an initial condition <-that part isn't coded yet
+
 int main () {
     //declare two variables for the A matrix
     A a;
@@ -162,6 +195,17 @@ int main () {
         Root r = unsimplified_root_finder(a1, b1, c1); //r now holds the roots
         //send to this function for proper formatting
         print_eigen_values(r);
+
+        // add case where if root is a repeated root once ryan has coded that
+        if (r.isComplex) {
+            //go fuck yourself
+        } else { // do beautiful magically amazing things
+            print_eigen_vectors(find_eigen_vectors(r.rootLeftValue + r.rootRightValue, a),
+                                find_eigen_vectors(r.rootLeftValue - r.rootRightValue, a),
+                                r.rootLeftValue + r.rootRightValue,
+                                r.rootLeftValue - r.rootRightValue);
+        }
+        
 
     return 0;
 }
