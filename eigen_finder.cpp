@@ -10,7 +10,8 @@ Description:
 Log:
     - 11/13 Ryan created this file and coded it to solve for real eigenvalues
     - 11/14 Ryan changed the unsimplified_root_finder to also find complex eigenvalues. Created formatted output for eigenvalues, added a lot of comments including this one right here.
-    - 11/15 Maggie created functions find_eigen_vectors and print_eigen_vectors. These only currently work in the case that both values are real. To do this I also created a templated Vector struct for printing ease. May delete this struct later seeing as it isn't a big contributor at the moment; Will determine once imaginary and repeated cases are added
+    - 11/15 Maggie created functions find_eigen_vectors and print_eigen_vectors. These only currently work in the case that both values are real. To do this I also created a templated Vector struct for printing ease. May delete this struct later seeing as it isn't a big contributor at the moment; Will determine once imaginary and repeated cases are added.
+    - 11/18 Maggie created repeated root case and structured find_eigen_vectors and print_eigen_vectors for all possible input
 todo
 - make a really nice matrix formatter cause this is super uglay
 - it can't take in nonintegers. this must change eventually. This is what templates are for!!!
@@ -99,26 +100,46 @@ void print_eigen_values(Root r) { //this looks confusing but trust the process
 }
 
 template<typename T>
-Vector<T> find_eigen_vectors(T r, A& a) {
-    //hopefully cheekily finding eigenvectors using slickboy moves
-    //found y using the equation Ax + By = 0
-    //in this case, assuming x = 1, y = -A/B
-    Vector<T> result;
-    result.x = 1;
-    result.y = (-1)*(a.x2/(a.x1-r));
-    
-    return result;
+Vector<T> find_eigen_vectors(T Lr, T Rr, A& a, bool complex) {
+    if (!complex) {
+        if ((Lr+Rr) != (Lr-Rr)) {
+            //hopefully cheekily finding eigenvectors using slickboy moves
+            //found y using the equation Ax + By = 0
+            //in this case, assuming x = 1, y = -A/B
+            Vector<T> result1;
+            result1.x = 1;
+            result1.y = (-1)*(a.x2/(a.x1-(Lr+Rr)));
+
+            Vector<T> result2;
+            result2.x = 1;
+            result2.y = (-1)*(a.x2/(a.x1-(Lr-Rr)));
+            
+            print_eigen_vectors(result1, Lr+Rr);
+            print_eigen_vectors(result2, Lr-Rr);
+
+        } else {
+            Vector<T> result1;
+            result1.x = 1;
+            result1.y = (-1)*((a.x1-(Lr+Rr))/a.x2);
+            
+            Vector<T> result2;
+            result2.x = 0;
+            result2.y = 1;
+
+            print_eigen_vectors(result1, Lr-Rr);
+            print_eigen_vectors(result2, Lr-Rr);
+        }
+
+    } else {
+        cout << "here";
+    }
 }
 
 template<typename T>
-void print_eigen_vectors(Vector<T> first, Vector<T> second, T left, T right) {
-    cout << "Eigen Value " << left << " has the vector: <";
-    cout << first.x << ", ";
-    cout << first.y << ">" << endl;
-
-    cout << "Eigen Value " << right << " has the vector: <";
-    cout << second.x << ", ";
-    cout << second.y << ">" << endl;
+void print_eigen_vectors(Vector<T>& vector, T value) {
+    cout << "Eigen Value " << value << " has the vector: <";
+    cout << vector.x << ", ";
+    cout << vector.y << ">" << endl;
 }
 
 
@@ -198,12 +219,9 @@ int main () {
 
         // add case where if root is a repeated root once ryan has coded that
         if (r.isComplex) {
-            //go fuck yourself
+            find_eigen_vectors(r.rootLeftValue, r.rootRightValue, a, true);
         } else { // do beautiful magically amazing things
-            print_eigen_vectors(find_eigen_vectors(r.rootLeftValue + r.rootRightValue, a),
-                                find_eigen_vectors(r.rootLeftValue - r.rootRightValue, a),
-                                r.rootLeftValue + r.rootRightValue,
-                                r.rootLeftValue - r.rootRightValue);
+            find_eigen_vectors(r.rootLeftValue, r.rootRightValue, a, false);
         }
         
 
