@@ -12,10 +12,16 @@ Log:
     - 11/14 Ryan changed the unsimplified_root_finder to also find complex eigenvalues. Created formatted output for eigenvalues, added a lot of comments including this one right here.
     - 11/15 Maggie created functions find_eigen_vectors and print_eigen_vectors. These only currently work in the case that both values are real. To do this I also created a templated Vector struct for printing ease. May delete this struct later seeing as it isn't a big contributor at the moment; Will determine once imaginary and repeated cases are added.
     - 11/18 Maggie created repeated root case and structured find_eigen_vectors and print_eigen_vectors for all possible input
+    - 11/18 Ryan Worked on the formatting for the y-solution part. Also included a repeated root value in the matrix struct
 todo
 - make a really nice matrix formatter cause this is super uglay
 - it can't take in nonintegers. this must change eventually. This is what templates are for!!!
 - find vectors in cases that eigen values are imaginary and repeated
+- make a string for the eigenvalues
+-ryan: object orient this shit
+-ryan: y equation solutions given initial conditions
+-maggie: eigen vectors
+-maggie: classify equilibrium solutions
 */
 #include <iostream>
 #include <cmath> //sqrt
@@ -41,6 +47,7 @@ struct Root {
     double rootLeftValue; //separate from right so that it's easy to print complex numbers
     double rootRightValue;
     bool isComplex;
+    bool isRepeated;
 };
 
 template<class T>
@@ -71,12 +78,24 @@ Root unsimplified_root_finder(int a, int b, int c) {
     right = right / (2 * a);
     r.rootRightValue = right;
 
+    if (right == 0) {
+        r.isRepeated = true;
+    }
+    else {
+        r.isRepeated = false;
+    }
+
     //we now have all three parts of the root expression: left side, right side, and if it is complex
     return r;
 }
 
 //takes a root struct that holds a left side, right side, and if its complex, formats everything!
 void print_eigen_values(Root r) { //this looks confusing but trust the process
+    if (r.isRepeated) {
+        cout << "Your eigen value is: ";
+        cout << r.rootLeftValue;
+        cout << " (repeated root)\n";
+    }
     cout << "Your eigen values are: ";
     //printing for if the root is NOT complex (finishing the math we left off by separating left and right)
     if (!r.isComplex) { //prints "root1, root2"
@@ -224,6 +243,27 @@ int main () {
             find_eigen_vectors(r.rootLeftValue, r.rootRightValue, a, false);
         }
         
+        cout << "General solution\n\ty(t)=c1*v1*e^(λ1*t)+c2*v2*e^(λ2*t)\n";
+        cout << "Your solution\n\ty(t)=c1*<" << /*print v1.x here*/ "v1.x, " << /*print v1.y here*/ "v1.y>";
+        cout << "*e^(" << /*print L1 here*/ "λ1*t)";
+        cout << "+c2<" << /*print v2.x here*/"v2.x, " << /*print v2.y here*/"v2.y>";
+        cout << "*e^(" << /*print L2 here*/"λ2*t)\n\n";
+
+        cout << "Do you have initial conditions you would like to input? (y/n): ";
+        string answer = "";
+        cin >> answer;
+        if (answer != "y" && answer != "Y") {
+            "Bye!\n";
+            return 0;
+        }
+        int independant = 0;
+        int dependant = 0;
+        cout << "Enter independent variable: ";
+        cin >> independant;
+        cout << "Enter dependent variable: ";
+        cin >> dependant;
+
+        //add this math part
 
     return 0;
 }
