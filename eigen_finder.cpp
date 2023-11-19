@@ -15,10 +15,9 @@ Log:
     - 11/18 Ryan Worked on the formatting for the y-solution part. Also included a repeated root value in the matrix struct
 todo
 - make a really nice matrix formatter cause this is super uglay
-- it can't take in nonintegers. this must change eventually. This is what templates are for!!!
+- it takes in decimals, but it can't be precise with nonterminal decimals and it might mark them as complex when they aren't
+    need a way to deal with unsimplified fractions.
 - find vectors in cases that eigen values are imaginary and repeated
-- make a string for the eigenvalues
--ryan: object orient this shit
 -ryan: y equation solutions given initial conditions
 -maggie: eigen vectors
 -maggie: classify equilibrium solutions
