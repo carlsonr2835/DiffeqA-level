@@ -84,7 +84,7 @@ Root unsimplified_root_finder(int a, int b, int c) {
     else {
         r.isRepeated = false;
     }
-
+    cout << endl << "Before Returned r.isComplex: " << r.isComplex << endl << endl;
     //we now have all three parts of the root expression: left side, right side, and if it is complex
     return r;
 }
@@ -95,26 +95,28 @@ void print_eigen_values(Root r) { //this looks confusing but trust the process
         cout << "Your eigen value is: ";
         cout << r.rootLeftValue;
         cout << " (repeated root)\n";
+    } else {
+        cout << "Your eigen values are: ";
+        //printing for if the root is NOT complex (finishing the math we left off by separating left and right)
+        if (!r.isComplex) { //prints "root1, root2"
+            cout << r.rootLeftValue + r.rootRightValue; //the + part of the +/
+            cout << ", ";
+            cout << r.rootLeftValue - r.rootRightValue; //the - part of the +-
+            cout << endl;
+        }
+        //printing for if the root is complex (this is why we left left and right separate)
+        else { //prints "left+iright, left-iright"
+            cout << r.rootLeftValue;
+            cout << "+i";
+            cout << r.rootRightValue;
+            cout << ", ";
+            cout << r.rootLeftValue;
+            cout << "-i";
+            cout << r.rootRightValue;
+            cout << endl;
+        }
     }
-    cout << "Your eigen values are: ";
-    //printing for if the root is NOT complex (finishing the math we left off by separating left and right)
-    if (!r.isComplex) { //prints "root1, root2"
-        cout << r.rootLeftValue + r.rootRightValue; //the + part of the +/
-        cout << ", ";
-        cout << r.rootLeftValue - r.rootRightValue; //the - part of the +-
-        cout << endl;
-    }
-    //printing for if the root is complex (this is why we left left and right separate)
-    else { //prints "left+iright, left-iright"
-        cout << r.rootLeftValue;
-        cout << "+i";
-        cout << r.rootRightValue;
-        cout << ", ";
-        cout << r.rootLeftValue;
-        cout << "-i";
-        cout << r.rootRightValue;
-        cout << endl;
-    }
+
     return;
 }
 
@@ -150,7 +152,7 @@ Vector<T> find_eigen_vectors(T Lr, T Rr, A& a, bool complex) {
         }
 
     } else {
-        cout << "here";
+        cout << "defined as complex" << endl;
     }
 }
 
@@ -235,14 +237,14 @@ int main () {
         Root r = unsimplified_root_finder(a1, b1, c1); //r now holds the roots
         //send to this function for proper formatting
         print_eigen_values(r);
-
-        // add case where if root is a repeated root once ryan has coded that
+//############################################################################PROBLEMO
         if (r.isComplex) {
             find_eigen_vectors(r.rootLeftValue, r.rootRightValue, a, true);
         } else { // do beautiful magically amazing things
+            cout << "not a complex number" << endl;
             find_eigen_vectors(r.rootLeftValue, r.rootRightValue, a, false);
         }
-        
+//############################################################################PROBLEMO        
         cout << "General solution\n\ty(t)=c1*v1*e^(λ1*t)+c2*v2*e^(λ2*t)\n";
         cout << "Your solution\n\ty(t)=c1*<" << /*print v1.x here*/ "v1.x, " << /*print v1.y here*/ "v1.y>";
         cout << "*e^(" << /*print L1 here*/ "λ1*t)";
