@@ -26,6 +26,7 @@ class Matrix {
         void print_eigen_vectors();
         void print_matrix();
         void print_general_solution();
+        void solution_type();
 
     private:
         //A matrix values
@@ -44,6 +45,9 @@ class Matrix {
         //eigen vectors
         vector<T> v1;
         vector<T> v2;
+        // complex vectors
+        vector<string> complexV1;
+        vector<string> complexV2;
         //initial conditions
         T independantVariable;
         vector<T> dependantVariables;
@@ -155,7 +159,7 @@ void Matrix<T>::find_eigen_values() {
         eigenValue2 = to_string(eigenRootLeftSide - eigenRootRightSide);
     }
     //DEBUG
-    cout << endl << "Before Returned r.isComplex: " << complexEigenValues << endl << endl;
+    //cout << endl << "Before Returned r.isComplex: " << complexEigenValues << endl << endl;
 }
 
 //utilizes strings to avoid ugly formatting for the complex roots
@@ -191,13 +195,47 @@ void Matrix<T>::find_eigen_vectors() {
         }
 
     } else {
-        cout << "defined as complex" << endl;
+        if (x2 == 1) { // removing the division
+            if (x1 == eigenRootLeftSide) { // if the left value is 0, removed
+                complexV1.push_back("1");
+                complexV1.push_back("(" + to_string(eigenRootRightSide) + "i)");
+
+                complexV2.push_back("1");
+                complexV2.push_back("(" + to_string(eigenRootRightSide) + "i)");
+            } else { // no division, yes left value
+                complexV1.push_back("1");
+                string value = to_string((-1)*(x1-(eigenRootLeftSide)));
+                complexV1.push_back("(" + value + " + " + to_string(eigenRootRightSide) + "i)");
+
+                complexV2.push_back("1");
+                value = to_string(x1-(eigenRootLeftSide));
+                complexV2.push_back("(" + value + " - " + to_string(eigenRootRightSide) + "i)");
+            }
+
+        } else if (x1 == eigenRootLeftSide) { // division and no left value
+            complexV1.push_back("1");
+            complexV1.push_back("(" + to_string(eigenRootRightSide) + "i) / " + to_string(x2));
+
+            complexV2.push_back("1");
+            complexV2.push_back("(" + to_string(eigenRootRightSide) + "i) / " + to_string(x2));
+        } else { // the whole enchalada
+            complexV1.push_back("1");
+
+            string value = to_string((-1)*(x1-(eigenRootLeftSide)));
+            complexV1.push_back("(" + value + " + " + to_string(eigenRootRightSide) + "i) / " + to_string(x2));
+
+            complexV2.push_back("1");
+
+            value = to_string(x1-(eigenRootLeftSide));
+            complexV2.push_back("(" + value + " - " + to_string(eigenRootRightSide) + "i) / " + to_string(x2));
+        }
     }
 }
 
 //I also modified this a little bit. You may need to put in some code you may or may not have already planned to add to print complex eigenvalues
 template <typename T>
 void Matrix<T>::print_eigen_vectors() {
+    cout << endl;
     if(!complexEigenValues) {
         //v1
         cout << "Eigen Value " << eigenValue1 << " has the vector: <";
@@ -209,8 +247,16 @@ void Matrix<T>::print_eigen_vectors() {
         cout << v2.at(1) << ">" << endl;
     }
     else {
-        cout << "This vector is complex! Code needed.\n";
+        //v1
+        cout << "Eigen Value " << eigenValue1 << " has the vector: <";
+        cout << complexV1.at(0) << ", ";
+        cout << complexV1.at(1) << ">" << endl;
+        //v2
+        cout << "Eigen Value " << eigenValue2 << " has the vector: <";
+        cout << complexV2.at(0) << ", ";
+        cout << complexV2.at(1) << ">" << endl;
     }
+    cout << endl;
 }
 
 //Ryan has plans for this one
@@ -226,6 +272,48 @@ void Matrix<T>::print_general_solution() {
     cout << "*e^((" << eigenValue1 << ")*t)";
     cout << "+c2<" << v2.at(0) << ", " << v2.at(1) << ">";
     cout << "*e^((" << eigenValue2 << ")*t)\n\n";
+}
+
+template<typename T>
+void Matrix<T>::solution_type() {
+    cout << "This is classified as ";
+
+    if (complexEigenValues) {
+        T a = eigenRootLeftSide;
+        T b = eigenRootRightSide;
+
+        if (a == 0) {
+            cout << "a Neutrally Stable Center" << endl;
+            cout << "In a spring system this would be a case of Undamping";
+        }else if ( (a < 0) && (b != 0) ) {
+            cout << "a Stable Spiral Sink" << endl;
+            cout << "In a spring system this would be an example of Under-Damping";
+        } else if ( (a > 0) && (b != 0) ) cout << "an Unstable Spiral Source";
+    } else if (repeatedEigenValues) {
+        T t = (x1 + y2);
+
+        if (t < 0) {
+            cout << "a Stable Degenerate Sink" << endl;
+            cout << "In a spring system this would be an example of Critical-Damping";
+        } else if (t > 0) cout << "an Unstable Degenerate Source";
+    } else {
+        T D = (x1 * y2) - (x2 * y1);
+        T t = (x1 + y2);
+        T wb1 = eigenRootLeftSide + eigenRootRightSide;
+        T wb2 = eigenRootLeftSide - eigenRootRightSide;
+
+        if (D < 0) cout << "a Saddle";
+        else if ( (wb1 < 0) && (wb2 < 0) ) {
+            cout << "a Real Stable Sink" << endl;
+            cout << "In a spring system this would be an example of Over-Damping";
+        } else if ( (wb1 > 0) && (wb2 > 0) ) cout << "a Real Unstable Sink";
+        else if (t = 0) {
+            cout << "a Center" << endl;
+            cout << "In a spring system this would be an example of Undamping";
+        } else cout << "We cannot identify this solution on the trace determinate plane. This may be a case of Only-Damping.";
+    }
+
+    cout << endl << endl;
 }
 
 #endif
