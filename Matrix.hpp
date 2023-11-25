@@ -27,6 +27,7 @@ class Matrix {
         void print_matrix();
         void print_general_solution();
         void solution_type();
+        void find_c();
 
     private:
         //A matrix values
@@ -51,6 +52,8 @@ class Matrix {
         //initial conditions
         T independantVariable;
         vector<T> dependantVariables;
+        T c1;
+        T c2;
 };
 
 //not currently initializing templated member variables...it seems fine
@@ -151,8 +154,14 @@ void Matrix<T>::find_eigen_values() {
     
     //build the strings which are used for print functions
     if (complexEigenValues) {
-        eigenValue1 = to_string(eigenRootLeftSide) + "+i" + to_string(eigenRootRightSide);
-        eigenValue2 = to_string(eigenRootLeftSide) + "-i" + to_string(eigenRootRightSide);
+        if (eigenRootLeftSide == 0) {
+            eigenValue1 = "i" + to_string(eigenRootRightSide);
+            eigenValue2 = "-i" + to_string(eigenRootRightSide);
+        }
+        else {
+            eigenValue1 = to_string(eigenRootLeftSide) + "+i" + to_string(eigenRootRightSide);
+            eigenValue2 = to_string(eigenRootLeftSide) + "-i" + to_string(eigenRootRightSide);
+        }
     }
     else {
         eigenValue1 = to_string(eigenRootLeftSide + eigenRootRightSide);
@@ -259,7 +268,6 @@ void Matrix<T>::print_eigen_vectors() {
     cout << endl;
 }
 
-//Ryan has plans for this one
 template <typename T>
 void Matrix<T>::print_matrix() {
 
@@ -267,11 +275,31 @@ void Matrix<T>::print_matrix() {
 
 template <typename T>
 void Matrix<T>::print_general_solution() {
-    cout << "General solution\n\ty(t)=c1*v1*e^(λ1*t)+c2*v2*e^(λ2*t)\n";
-    cout << "Your solution\n\ty(t)=c1*<" << v1.at(0) << ", " << v1.at(1) << ">";
-    cout << "*e^((" << eigenValue1 << ")*t)";
-    cout << "+c2<" << v2.at(0) << ", " << v2.at(1) << ">";
-    cout << "*e^((" << eigenValue2 << ")*t)\n\n";
+    if (complexEigenValues) {        
+        cout << "Your solution\n\ty(t) = ";
+        cout << "c1e^(" << to_string(eigenRootLeftSide) << "t)<";
+        cout << "cos(" << to_string(eigenRootRightSide) << "t),";
+        cout << to_string(eigenRootLeftSide) << "cos(" << to_string(eigenRootRightSide) << "t)";
+        cout << " - " << to_string(eigenRootRightSide) << "sin(" << to_string(eigenRootRightSide) << "t)>";
+        cout << " + c2e^(" << to_string(eigenRootLeftSide) << "t)<";
+        cout << "sin(" << to_string(eigenRootRightSide) << "t),";
+        cout << to_string(eigenRootRightSide) << "cos(" << to_string(eigenRootRightSide) << "t)";
+        cout << " + " << to_string(eigenRootLeftSide) << "sin(" << to_string(eigenRootRightSide) << "t)>";
+    }
+    else if (repeatedEigenValues) {
+        cout << "Your solution\n\ty(t) = c1e^(" << eigenValue1 << "t)<";
+        cout << v1.at(0) << ","  << v1.at(1) << ">";
+        cout << " + c2(e^(" << eigenValue1 << "t)<";
+        cout << v1.at(0) << "," << v1.at(1) << ">";
+        cout << " + e^(" << eigenValue1 << "t)<";
+        cout << v2.at(0) << "," << v2.at(1) << ">)\n";
+    }
+    else { //real vectors
+        cout << "Your solution\n\ty(t) = c1e^(" << eigenValue1 << "t)<";
+        cout << v1.at(0) << ","  << v1.at(1) << ">";
+        cout << " + c2e^(" << eigenValue1 << "t)<";
+        cout << v2.at(0) << "," << v2.at(1) << ">\n";
+    }
 }
 
 template<typename T>

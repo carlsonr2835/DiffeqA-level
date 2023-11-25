@@ -15,37 +15,59 @@ Log:
     - 11/18 Ryan Worked on the formatting for the y-solution part. Also included a repeated root value in the matrix struct
     - 11/19 Ryan modified the entire file to be object oriented with a Matrix class for better abstraction, fixed (I think) issues that were coming up with complex roots and repeated roots not being marked properly, added Matrix member variables that made printing easier, and finished properly formatting the general solution. Templated the class.
     - 11/22 Maggie created imaginary eigen vectors (added string vectors in order to print complex solutions), coded all possible trace-determinate solutions as well as what each solution's spring type would be if it can be classified as a spring system.
+    - 11/24 Ryan updated the y-solution to output correct solution for real, repeated, and complex roots, created an error checking function for A-matrix input
 
 todo
-- Better matrix formatter with iomanip
 - way to work with fractions? (program is not precise for repeating fractions and may mark them incorrectly as complex/repeated)
-- find vectors in cases that eigen values are imaginary and repeated
--ryan: y equation solutions given initial conditions
 -magie: format A matrix output
 
 notes:
-    THE PROGRAM WILL CRASH for complex numbers when it tries to output them. That is OKAY. I know exactly why that is happening and how to fix it. We just need to be able to print them as strings in the eigenvector functions and ryan's general solution function.
-
     how 2 run:
         open terminal->cd DiffeqA-level
         g++ main.cpp
         ./a.out
+    
+    issues based on the solutions list:
+        #51 CORRECT
+        #52 CORRECT
+        #53 v2 signs are flipped, but I'm pretty sure that doesn't matter
+        #54 real part sign on v2 is wrong
+        #55 incorrect v2.y sign on the real number only
+        #56 incorrect v2.y sign, the complex number over the real denominator can be simplified
+        #57 CORRECT
+        #58 rounding in eigenvalue messing this up
 */
 
 #include "Matrix.hpp"
 
+template <typename T>
+T get_int_with_error_check(string prompt, T var) {
+    while (true) {
+        cout << prompt;
+        cin >> var;
+        if (cin.fail()) {
+            cout << "Incorrect input. Try again...\n";
+            cin.clear();
+            cin.ignore();
+        }
+        else {
+            return var;
+        }
+    }
+}
+
 int main() {
     cout << "Hello! Welcome to the eigen value/eigen vector finder!" << endl << "Please input your A matrix...\n";
-    //NOTE: ryan will make print_matrix that looks nice, but that part is currently not in this main.cpp
-    //Will not prompt for x1, x2, y1, y2 explicitly at the moment: to use, just input and press enter for x1, x2, y1, y2
     
     //get the A matrix
     double x1, x2, y1, y2;
     Matrix<double> m;
-    cin >> x1;
-    cin >> x2;
-    cin >> y1;
-    cin >> y2;
+
+    x1 = get_int_with_error_check("\tx1: ", x1);
+    x2 = get_int_with_error_check("\tx2: ", x2);
+    y1 = get_int_with_error_check("\ty1: ", y1);
+    y2 = get_int_with_error_check("\ty2: ", y2);
+    
     m.setValues(x1, x2, y1, y2);
 
     //(DEBUG): print the whole matrix
@@ -65,7 +87,7 @@ int main() {
     m.solution_type();
     //print the general solution, ask for initial conditions
     m.print_general_solution();
-    cout << "Do you have initial conditions to input? (y/n): "; //no error checking right now. SMART USER!
+    /*cout << "Do you have initial conditions to input? (y/n): "; //no error checking right now. SMART USER!
     string answer = "";
     cin >> answer;
     if (answer != "y" && answer != "Y") {
@@ -79,7 +101,7 @@ int main() {
     cin >> dependantVariableX;
     cout << "Dependant y: ";
     cin >> dependantVariableY;
-    m.setInitialConditions(independantVariable, dependantVariableX, dependantVariableY);
+    m.setInitialConditions(independantVariable, dependantVariableX, dependantVariableY);*/
 
     //nothing happens with that solving yet...
     
