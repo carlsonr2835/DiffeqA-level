@@ -167,8 +167,6 @@ void Matrix<T>::find_eigen_values() {
         eigenValue1 = to_string(eigenRootLeftSide + eigenRootRightSide);
         eigenValue2 = to_string(eigenRootLeftSide - eigenRootRightSide);
     }
-    //DEBUG
-    //cout << endl << "Before Returned r.isComplex: " << complexEigenValues << endl << endl;
 }
 
 //utilizes strings to avoid ugly formatting for the complex roots
@@ -181,21 +179,20 @@ void Matrix<T>::print_eigen_values() {
     }
 }
 
-//Sorry Maggie I had to modify some stuff to get the code to run in a class. I hope this still makes sense. I modified as little as possible but I had to use all the class member variable names instead of your variable names
 template <typename T>
 void Matrix<T>::find_eigen_vectors() {
     if (!complexEigenValues) { //real roots
-        if ((eigenRootLeftSide + eigenRootRightSide) != (eigenRootLeftSide - eigenRootRightSide)) { //equivalent to if(!repeatedEigenValues?)
+        if(!repeatedEigenValues) {
             //hopefully cheekily finding eigenvectors using slickboy moves
             //found y using the equation Ax + By = 0
             //in this case, assuming x = 1, y = -A/B
             v1.push_back(1);
-            v1.push_back((-1)*(x2/(x1-(eigenRootLeftSide + eigenRootRightSide))));
+            v1.push_back( (-1)*(x2/( x1-(eigenRootLeftSide + eigenRootRightSide) )) );
 
             v2.push_back(1);
             v2.push_back((-1)*(x2/(x1-(eigenRootLeftSide - eigenRootRightSide))));
 
-        } else {
+        } else { // repeated
             v1.push_back(1);
             v1.push_back((-1)*((x1-(eigenRootLeftSide + eigenRootRightSide))/x2));
             
@@ -203,45 +200,52 @@ void Matrix<T>::find_eigen_vectors() {
             v2.push_back(1);
         }
 
-    } else {
-        if (x2 == 1) { // removing the division
-            if (x1 == eigenRootLeftSide) { // if the left value is 0, removed
-                complexV1.push_back("1");
-                complexV1.push_back("(" + to_string(eigenRootRightSide) + "i)");
-
-                complexV2.push_back("1");
-                complexV2.push_back("(" + to_string(eigenRootRightSide) + "i)");
-            } else { // no division, yes left value
-                complexV1.push_back("1");
-                string value = to_string((-1)*(x1-(eigenRootLeftSide)));
-                complexV1.push_back("(" + value + " + " + to_string(eigenRootRightSide) + "i)");
-
-                complexV2.push_back("1");
-                value = to_string(x1-(eigenRootLeftSide));
-                complexV2.push_back("(" + value + " - " + to_string(eigenRootRightSide) + "i)");
-            }
-
-        } else if (x1 == eigenRootLeftSide) { // division and no left value
-            complexV1.push_back("1");
-            complexV1.push_back("(" + to_string(eigenRootRightSide) + "i) / " + to_string(x2));
-
-            complexV2.push_back("1");
-            complexV2.push_back("(" + to_string(eigenRootRightSide) + "i) / " + to_string(x2));
-        } else { // the whole enchalada
-            complexV1.push_back("1");
-
-            string value = to_string((-1)*(x1-(eigenRootLeftSide)));
-            complexV1.push_back("(" + value + " + " + to_string(eigenRootRightSide) + "i) / " + to_string(x2));
-
-            complexV2.push_back("1");
-
-            value = to_string(x1-(eigenRootLeftSide));
-            complexV2.push_back("(" + value + " - " + to_string(eigenRootRightSide) + "i) / " + to_string(x2));
+    } else { //complex roots
+    // assume the previous equation
+        // complex roots follow the appearance of -(x1 - a + bi)/x2  (condesing (x1-a) to a)
+        // with this in mind, I need to account for several simplified cases
+        // 1) normal      -> -(x1 - (a + bi))/x2    -(x1 + (a + bi))/x2
+        // 2) a=x1        ->  (bi)/x2               -(x1 + (a + bi))/x2
+        // 3) a=-x1       -> -(x1 - (a + bi))/x2    -(bi)/x2
+        // 4) x2=1        -> -(x1 - (a + bi))       -(x1 + (a + bi))
+        // 5) a=x1 & x2=1 -> -(bi)                  -(x1 + (a + bi))
+        // 6) I have also accounted for if (x1 - a) and b are divisible by x2 to simplify further
+        
+    // simplying fraction if needed
+        // starting variables as if not simplifiable
+        T left = (-1)*(x1-eigenRootLeftSide);
+        T right = eigenRootRightSide;
+        int leftD = left/x2;
+        int rightD = right/x2;
+        string division = ("/" + to_string(x2));
+        if ((leftD == left/x2) && (rightD == eigenRootRightSide/x2)) { // if simplifiable
+            left = leftD;
+            right = rightD;
+            division = "";
         }
+
+        string real = ""; // assuming a and x1 cancel
+        string imaginary = "i"; // assuming simplification to i
+        if (left != x2 && right != x2) { // if it doesn't simplify to i
+            if (left != 0) real = (to_string(left) + "+"); // and x1 did not cancel
+            if (abs(right) != 1.0) imaginary = (to_string(abs(right)) + "i"); // checks b
+        }
+
+        complexV1.push_back("1");
+        complexV1.push_back("(" + real + imaginary + ")" + division);
+
+        real = ""; // assuming a and x1 cancel
+        imaginary = "-i"; // assuming simplification to -i
+        if (left != x2 && right != x2) { // did not simplify to -i
+            if (left != 0) real = (to_string(left)); // a and x1 did not cancel
+            if (abs(right) != 1) imaginary = ("-" + to_string(abs(right)) + "i"); // checks b
+        }
+        
+        complexV2.push_back("1");
+        complexV2.push_back("(" + real + imaginary + ")" + division);
     }
 }
 
-//I also modified this a little bit. You may need to put in some code you may or may not have already planned to add to print complex eigenvalues
 template <typename T>
 void Matrix<T>::print_eigen_vectors() {
     cout << endl;
@@ -306,7 +310,7 @@ template<typename T>
 void Matrix<T>::solution_type() {
     cout << "This is classified as ";
 
-    if (complexEigenValues) {
+    if (complexEigenValues) { // complex
         T a = eigenRootLeftSide;
         T b = eigenRootRightSide;
 
@@ -317,16 +321,16 @@ void Matrix<T>::solution_type() {
             cout << "a Stable Spiral Sink" << endl;
             cout << "In a spring system this would be an example of Under-Damping";
         } else if ( (a > 0) && (b != 0) ) cout << "an Unstable Spiral Source";
-    } else if (repeatedEigenValues) {
-        T t = (x1 + y2);
+    } else if (repeatedEigenValues) { // repeated
+        T t = (x1 + y2); // trace
 
         if (t < 0) {
             cout << "a Stable Degenerate Sink" << endl;
             cout << "In a spring system this would be an example of Critical-Damping";
         } else if (t > 0) cout << "an Unstable Degenerate Source";
-    } else {
-        T D = (x1 * y2) - (x2 * y1);
-        T t = (x1 + y2);
+    } else { // real and different
+        T D = (x1 * y2) - (x2 * y1); // determinant
+        T t = (x1 + y2); // trace
         T wb1 = eigenRootLeftSide + eigenRootRightSide;
         T wb2 = eigenRootLeftSide - eigenRootRightSide;
 

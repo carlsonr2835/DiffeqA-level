@@ -16,6 +16,7 @@ Log:
     - 11/19 Ryan modified the entire file to be object oriented with a Matrix class for better abstraction, fixed (I think) issues that were coming up with complex roots and repeated roots not being marked properly, added Matrix member variables that made printing easier, and finished properly formatting the general solution. Templated the class.
     - 11/22 Maggie created imaginary eigen vectors (added string vectors in order to print complex solutions), coded all possible trace-determinate solutions as well as what each solution's spring type would be if it can be classified as a spring system.
     - 11/24 Ryan updated the y-solution to output correct solution for real, repeated, and complex roots, created an error checking function for A-matrix input
+    - 11/27 Maggie did a not good enough job at eigenvectors for complex roots. I have vastly improved it and the function even has the capabilities of simplifying the answer now. It has worked for all of the examples I could find. I have found ways to break the code (choosing random values to plug in the A matrix), but I'm not sure if it is supposed to work in this instance. I believe they should because I can work through the problems by hand just fine, so I will be working on this.
 
 todo
 - way to work with fractions? (program is not precise for repeating fractions and may mark them incorrectly as complex/repeated)
@@ -27,7 +28,7 @@ notes:
         g++ main.cpp
         ./a.out
     
-    issues based on the solutions list:
+    issues based on the solutions list: ##### Hey ryan I didn't wanna touch this in case it wasn't referring to the vectors, but all vectors should now be working for the master list problems that are complex (CHECKED THOROUGHLY)
         #51 CORRECT
         #52 CORRECT
         #53 v2 signs are flipped, but I'm pretty sure that doesn't matter
