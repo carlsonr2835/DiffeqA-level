@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <cmath> //sqrt
+
 using namespace std;
 
 #ifndef MATRIX_HPP
@@ -273,8 +274,49 @@ void Matrix<T>::print_eigen_vectors() {
 }
 
 template <typename T>
-void Matrix<T>::print_matrix() {
+void Matrix<T>::print_matrix() { // currently does not print correctly, need to add parameters
+    vector<int> lengths = {(int)(to_string(x1).length()),
+                            (int)(to_string(x2).length()),
+                            (int)(to_string(y1).length()),
+                            (int)(to_string(y2).length())};
 
+    int longestCol1 = lengths[0];
+    int shortestCol1 = lengths[2];
+    if (lengths[2] > longestCol1) {
+        longestCol1 = lengths[2];
+        shortestCol1 = lengths[0];
+    }
+
+    int longestCol2 = lengths[1];
+    int shortestCol2 = lengths[3];
+    if (lengths[3] > longestCol2) {
+        longestCol2 = lengths[3];
+        shortestCol2 = lengths[1];
+    }
+
+//line 1
+    cout << endl << "┌";
+    for (int i = 0; i < longestCol1 + longestCol2 - 2; i ++) {cout << " ";}
+    cout << "┐" << endl;
+
+//line 2
+    cout << "| " << x1;
+    for (int i = 0; i < 2 + (longestCol1 - lengths[0]); i ++) {cout << " ";}
+    cout << x2;
+    for (int i = 0; i < longestCol2 - lengths[1]; i ++) {cout << " ";}
+    cout << " |" << endl;
+
+//line 3
+    cout << "| " << y1;
+    for (int i = 0; i < 2 + (longestCol1 - lengths[2]); i ++) {cout << " ";}
+    cout << y2;
+    for (int i = 0; i < longestCol2 - lengths[3]; i ++) {cout << " ";}
+    cout << " |" << endl;
+
+//line 4
+    cout << "└";
+    for (int i = 0; i < longestCol1 + longestCol2 - 2; i ++) {cout << " ";}
+    cout << "┘" << endl;
 }
 
 template <typename T>
