@@ -25,7 +25,7 @@ class Matrix {
         void print_eigen_values();
         void find_eigen_vectors();
         void print_eigen_vectors();
-        void print_matrix();
+        void print_matrix(string X1, string X2, string Y1, string Y2);
         void print_general_solution();
         void solution_type();
         void find_c();
@@ -116,10 +116,8 @@ void Matrix<T>::find_eigen_values() {
         //=det({x1-L, x2}, {y1, y2-L})
         //no math needed here
         cout << "\nA-λI:\n";
-        cout << "__         __" << endl <<
-        "| " << x1 << "-λ    " << x2 << "  |" << endl << 
-        "| " << y1 << "      " << y2 << "-λ|" << endl <<
-        "|_         _|" << endl;
+        print_matrix(to_string(x1)+"-λ", to_string(x2), to_string(y1), to_string(y2)+"-λ");
+        
     //find det(A - lambda*I)
     cout << "\ndet(A - λI):\n";
     cout << "(" << x1 << "-λ)(" << y2 << "-λ) - (" << x2 << ")(" << y1 << ")\n";
@@ -274,49 +272,35 @@ void Matrix<T>::print_eigen_vectors() {
 }
 
 template <typename T>
-void Matrix<T>::print_matrix() { // currently does not print correctly, need to add parameters
-    vector<int> lengths = {(int)(to_string(x1).length()),
-                            (int)(to_string(x2).length()),
-                            (int)(to_string(y1).length()),
-                            (int)(to_string(y2).length())};
+void Matrix<T>::print_matrix(string X1, string X2, string Y1, string Y2) { 
+    vector<int> lengths = {(int)(X1.length()),
+                            (int)(X2.length()),
+                            (int)(Y1.length()),
+                            (int)(Y2.length())};
 
     int longestCol1 = lengths[0];
-    int shortestCol1 = lengths[2];
     if (lengths[2] > longestCol1) {
         longestCol1 = lengths[2];
-        shortestCol1 = lengths[0];
     }
 
     int longestCol2 = lengths[1];
-    int shortestCol2 = lengths[3];
     if (lengths[3] > longestCol2) {
         longestCol2 = lengths[3];
-        shortestCol2 = lengths[1];
     }
 
 //line 1
-    cout << endl << "┌";
-    for (int i = 0; i < longestCol1 + longestCol2 - 2; i ++) {cout << " ";}
-    cout << "┐" << endl;
+    cout << endl << "/ " << X1;
+    for (int i = 0; i < 2 + (longestCol1 - lengths[0]); i ++) {cout << " ";}
+    cout << X2;
+    for (int i = 0; i < longestCol2 - lengths[1]; i ++) {cout << " ";}
+    cout << " \\" << endl;
 
 //line 2
-    cout << "| " << x1;
-    for (int i = 0; i < 2 + (longestCol1 - lengths[0]); i ++) {cout << " ";}
-    cout << x2;
-    for (int i = 0; i < longestCol2 - lengths[1]; i ++) {cout << " ";}
-    cout << " |" << endl;
-
-//line 3
-    cout << "| " << y1;
+    cout << "\\ " << Y1;
     for (int i = 0; i < 2 + (longestCol1 - lengths[2]); i ++) {cout << " ";}
-    cout << y2;
+    cout << Y2;
     for (int i = 0; i < longestCol2 - lengths[3]; i ++) {cout << " ";}
-    cout << " |" << endl;
-
-//line 4
-    cout << "└";
-    for (int i = 0; i < longestCol1 + longestCol2 - 2; i ++) {cout << " ";}
-    cout << "┘" << endl;
+    cout << " /" << endl;
 }
 
 template <typename T>

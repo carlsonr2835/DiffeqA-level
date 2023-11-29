@@ -18,10 +18,10 @@ Log:
     - 11/24 Ryan updated the y-solution to output correct solution for real, repeated, and complex roots, created an error checking function for A-matrix input
     - 11/27 Maggie did a not good enough job at eigenvectors for complex roots. I have vastly improved it and the function even has the capabilities of simplifying the answer now. It has worked for all of the examples I could find. I have found ways to break the code (choosing random values to plug in the A matrix), but I'm not sure if it is supposed to work in this instance. I believe they should because I can work through the problems by hand just fine, so I will be working on this.
     - 11/28 Maggie coded the brunt of the matrix printing code. It is still pretty basic and will only someone correctly print the initial A matrix. I will need to add input parameters so it's a more versative function.
+    - 11/29 Maggie finished coding the print_matrix function with good formattting and now works for all inputs
 
 todo
 - way to work with fractions? (program is not precise for repeating fractions and may mark them incorrectly as complex/repeated)
--magie: format A matrix output
 
 notes:
     how 2 run:
@@ -72,13 +72,9 @@ int main() {
     
     m.setValues(x1, x2, y1, y2);
 
-    m.print_matrix();
-    //(DEBUG): print the whole matrix
-    //cout << "__         __" << endl <<
-    //        "| " << m.getx1() << "      " << m.getx2() << "  |" << endl << 
-    //        "| " << m.gety1() << "      " << m.gety2() << "  |" << endl <<
-    //        "|_         _|" << endl;
-
+    // A matrix print
+    m.print_matrix(to_string(x1), to_string(x2), to_string(y1), to_string(y2));
+    
     //eigenvalues
     m.find_eigen_values();
 
