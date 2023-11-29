@@ -59,11 +59,16 @@ T get_int_with_error_check(string prompt, T var) {
 }
 
 int main() {
-    cout << "Hello! Welcome to the eigen value/eigen vector finder!" << endl << "Please input your A matrix...\n";
+    cout << "Hello! Welcome to the eigen value/eigen vector finder!" << endl;
+    cout << "Please input your A matrix formatted as follows...\n";
+    
     
     //get the A matrix
     double x1, x2, y1, y2;
     Matrix<double> m;
+
+    m.print_matrix("x1", "x2", "y1", "y2");
+    cout << endl;
 
     x1 = get_int_with_error_check("\tx1: ", x1);
     x2 = get_int_with_error_check("\tx2: ", x2);
