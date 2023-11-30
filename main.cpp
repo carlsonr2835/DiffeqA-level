@@ -66,7 +66,7 @@ int main() {
     //get the A matrix
     double x1, x2, y1, y2;
     Matrix<double> m;
-
+//bruh
     m.print_matrix("x1", "x2", "y1", "y2");
     cout << endl;
 
