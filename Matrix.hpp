@@ -61,7 +61,7 @@ class Matrix {
 template <typename T>
 Matrix<T>::Matrix() { //initialize everything to default
     eigenRootLeftSide = 0.0;
-    eigenRootRightSide - 0.0;
+    eigenRootRightSide = 0.0;
     complexEigenValues = false;
     repeatedEigenValues = false;
     eigenValue1 = "";
@@ -273,10 +273,12 @@ void Matrix<T>::print_eigen_vectors() {
 
 template <typename T>
 void Matrix<T>::print_matrix(string X1, string X2, string Y1, string Y2) { 
-    vector<int> lengths = {(int)(X1.length()),
-                            (int)(X2.length()),
-                            (int)(Y1.length()),
-                            (int)(Y2.length())};
+    //vector<int> lengths = {(int)(X1.length()),(int)(X2.length()),(int)(Y1.length()),(int)(Y2.length())};
+    vector<int> lengths;
+    lengths.push_back((int)(X1.length()));
+    lengths.push_back((int)(X2.length()));
+    lengths.push_back((int)(Y1.length()));
+    lengths.push_back((int)(Y2.length()));
 
     int longestCol1 = lengths[0];
     if (lengths[2] > longestCol1) {
@@ -365,7 +367,7 @@ void Matrix<T>::solution_type() {
             cout << "a Real Stable Sink" << endl;
             cout << "In a spring system this would be an example of Over-Damping";
         } else if ( (wb1 > 0) && (wb2 > 0) ) cout << "a Real Unstable Sink";
-        else if (t = 0) {
+        else if (t == 0) {
             cout << "a Center" << endl;
             cout << "In a spring system this would be an example of Undamping";
         } else cout << "We cannot identify this solution on the trace determinate plane. This may be a case of Only-Damping.";
