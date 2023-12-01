@@ -12,36 +12,24 @@ template <typename T>
 class Matrix {
     public:
         Matrix();
-        //Matrix(const Matrix<T>& OTHER);
-        //Matrix& operator=(const Matrix<T>& OTHER);
-        //~Matrix();
         void setValues(T X1, T X2, T Y1, T Y2);
-        void setInitialConditions(T independant, T dependantx, T dependanty);
-        T getx1();
-        T getx2();
-        T gety1();
-        T gety2();
-        void find_eigen_values(); //full process
+        void find_eigen_values();
         void print_eigen_values();
         void find_eigen_vectors();
         void print_eigen_vectors();
         void print_matrix(string X1, string X2, string Y1, string Y2);
         void print_general_solution();
         void solution_type();
-        void find_c();
 
     private:
         //A matrix values
-        T x1;
-        T x2;
-        T y1;
-        T y2;
+        T x1, x2, y1, y2;
         //eigen roots and their properties
         double eigenRootLeftSide;
         double eigenRootRightSide;
         bool complexEigenValues;
         bool repeatedEigenValues;
-        //full eigen values which are used for printing only
+        //full eigen values which are used for printing only (to avoid math with i)
         string eigenValue1;
         string eigenValue2;
         //eigen vectors
@@ -50,14 +38,9 @@ class Matrix {
         // complex vectors
         vector<string> complexV1;
         vector<string> complexV2;
-        //initial conditions
-        T independantVariable;
-        vector<T> dependantVariables;
-        T c1;
-        T c2;
 };
 
-//not currently initializing templated member variables...it seems fine
+//this doesn't really do anything :)
 template <typename T>
 Matrix<T>::Matrix() { //initialize everything to default
     eigenRootLeftSide = 0.0;
@@ -68,10 +51,6 @@ Matrix<T>::Matrix() { //initialize everything to default
     eigenValue2 = "";
 }
 
-//Matrix(const Matrix<T>& OTHER);
-//Matrix& operator=(const Matrix<T>& OTHER);
-//~Matrix();
-
 template <typename T>
 void Matrix<T>::setValues(T X1, T X2, T Y1, T Y2) {
     x1 = X1;
@@ -79,35 +58,6 @@ void Matrix<T>::setValues(T X1, T X2, T Y1, T Y2) {
     y1 = Y1;
     y2 = Y2;
 }
-
-template <typename T>
-void Matrix<T>::setInitialConditions(T independant, T dependantx, T dependanty) {
-    independantVariable = independant;
-    dependantVariables.push_back(dependantx);
-    dependantVariables.push_back(dependanty);
-}
-
-/////////these getters are may end up being uncessesary but Ryan is leaving them in for future matrix formatting ideas
-template <typename T>
-T Matrix<T>::getx1() {
-    return x1;
-}
-
-template <typename T>
-T Matrix<T>::getx2() {
-    return x2;
-}
-
-template <typename T>
-T Matrix<T>::gety1() {
-    return y1;
-}
-
-template <typename T>
-T Matrix<T>::gety2() {
-    return y2;
-}
-////////
 
 //computes determinant, finds lambda quadratic equation, solves eigenvalues, marks if repeated or complex, is NOT ACCURATE for repeating fractions
 template <typename T>
@@ -119,15 +69,15 @@ void Matrix<T>::find_eigen_values() {
         print_matrix(to_string(x1)+"-λ", to_string(x2), to_string(y1), to_string(y2)+"-λ");
         
     //find det(A - lambda*I)
-    cout << "\ndet(A - λI):\n";
-    cout << "(" << x1 << "-λ)(" << y2 << "-λ) - (" << x2 << ")(" << y1 << ")\n";
+    cout << "\ndet(A - λI):\n\n";
+    cout << "\t(" << x1 << "-λ)(" << y2 << "-λ) - (" << x2 << ")(" << y1 << ")\n";
 
     //quatratic terms:
     double a = 1;
     double b = x1*-1 + y2*-1;
     double c = (x1 * y2) - (x2 * y1);
     //output the standard form quadratic equation
-    cout << "=λ^2 + " << b << "λ + " << c << endl;
+    cout << "\t=λ^2 + " << b << "λ + " << c << endl << endl;
 
     //repeated root case
     if ((abs(b*b) - 4*c) == 0) {
@@ -153,7 +103,7 @@ void Matrix<T>::find_eigen_values() {
     
     //build the strings which are used for print functions
     if (complexEigenValues) {
-        if (eigenRootLeftSide == 0) {
+        if (eigenRootLeftSide == 0) { //complex only
             eigenValue1 = "i" + to_string(eigenRootRightSide);
             eigenValue2 = "-i" + to_string(eigenRootRightSide);
         }
@@ -162,19 +112,19 @@ void Matrix<T>::find_eigen_values() {
             eigenValue2 = to_string(eigenRootLeftSide) + "-i" + to_string(eigenRootRightSide);
         }
     }
-    else {
+    else { //real
         eigenValue1 = to_string(eigenRootLeftSide + eigenRootRightSide);
         eigenValue2 = to_string(eigenRootLeftSide - eigenRootRightSide);
     }
 }
 
-//utilizes strings to avoid ugly formatting for the complex roots
+//utilizes strings to make it easier to print. Eigen value doubles stay sepatated as complex numbers so we can do math with them
 template <typename T>
 void Matrix<T>::print_eigen_values() {
     if (repeatedEigenValues) {
-        cout << "Your eigen value is: " << eigenValue1 << " (repeated roots)\n";
+        cout << "Your eigen value is:\n\n\t" << eigenValue1 << " (repeated roots)\n";
     } else {
-        cout << "Your eigen values are: " << eigenValue1 << ", " << eigenValue2 << endl;;
+        cout << "Your eigen values are:\n\n\t" << eigenValue1 << ", " << eigenValue2 << endl;;
     }
 }
 
@@ -273,9 +223,9 @@ void Matrix<T>::print_eigen_vectors() {
 
 template <typename T>
 void Matrix<T>::print_matrix(string X1, string X2, string Y1, string Y2) { 
-    //vector<int> lengths = {(int)(X1.length()),(int)(X2.length()),(int)(Y1.length()),(int)(Y2.length())};
+    //vector<int> lengths = {(int)(X1.length()),(int)(X2.length()),(int)(Y1.length()),(int)(Y2.length())}; //this works on Maggie's windows machine but not Ryan's mac
     vector<int> lengths;
-    lengths.push_back((int)(X1.length()));
+    lengths.push_back((int)(X1.length())); //this works for everyone. We are a happy family
     lengths.push_back((int)(X2.length()));
     lengths.push_back((int)(Y1.length()));
     lengths.push_back((int)(Y2.length()));
@@ -307,36 +257,38 @@ void Matrix<T>::print_matrix(string X1, string X2, string Y1, string Y2) {
 
 template <typename T>
 void Matrix<T>::print_general_solution() {
-    if (complexEigenValues) {        
-        cout << "Your solution\n\ty(t) = ";
+    //prints complex vectors in their cos and sin forms as seen in the symbolic solution techniques solutions
+    if (complexEigenValues) {       
+        cout << "Your solution:\n\n\ty(t) = ";
         cout << "c1e^(" << to_string(eigenRootLeftSide) << "t)<";
         cout << "cos(" << to_string(eigenRootRightSide) << "t),";
         cout << to_string(eigenRootLeftSide) << "cos(" << to_string(eigenRootRightSide) << "t)";
         cout << " - " << to_string(eigenRootRightSide) << "sin(" << to_string(eigenRootRightSide) << "t)>";
-        cout << " + c2e^(" << to_string(eigenRootLeftSide) << "t)<";
+        cout << "\n\t\t + c2e^(" << to_string(eigenRootLeftSide) << "t)<";
         cout << "sin(" << to_string(eigenRootRightSide) << "t),";
         cout << to_string(eigenRootRightSide) << "cos(" << to_string(eigenRootRightSide) << "t)";
-        cout << " + " << to_string(eigenRootLeftSide) << "sin(" << to_string(eigenRootRightSide) << "t)>";
+        cout << " + " << to_string(eigenRootLeftSide) << "sin(" << to_string(eigenRootRightSide) << "t)>\n\n";
     }
     else if (repeatedEigenValues) {
-        cout << "Your solution\n\ty(t) = c1e^(" << eigenValue1 << "t)<";
+        cout << "Your solution:\n\n\ty(t) = c1e^(" << eigenValue1 << "t)<";
         cout << v1.at(0) << ","  << v1.at(1) << ">";
         cout << " + c2(e^(" << eigenValue1 << "t)<";
         cout << v1.at(0) << "," << v1.at(1) << ">";
         cout << " + e^(" << eigenValue1 << "t)<";
-        cout << v2.at(0) << "," << v2.at(1) << ">)\n";
+        cout << v2.at(0) << "," << v2.at(1) << ">)\n\n";
     }
     else { //real vectors
-        cout << "Your solution\n\ty(t) = c1e^(" << eigenValue1 << "t)<";
+        cout << "Your solution:\n\n\ty(t) = c1e^(" << eigenValue1 << "t)<";
         cout << v1.at(0) << ","  << v1.at(1) << ">";
         cout << " + c2e^(" << eigenValue1 << "t)<";
-        cout << v2.at(0) << "," << v2.at(1) << ">\n";
+        cout << v2.at(0) << "," << v2.at(1) << ">\n\n";
     }
 }
 
 template<typename T>
 void Matrix<T>::solution_type() {
-    cout << "This is classified as ";
+    cout << "Solution type:\n\n";
+    cout << "\tThis is classified as ";
 
     if (complexEigenValues) { // complex
         T a = eigenRootLeftSide;
@@ -375,5 +327,7 @@ void Matrix<T>::solution_type() {
 
     cout << endl << endl;
 }
+
+//hi there
 
 #endif

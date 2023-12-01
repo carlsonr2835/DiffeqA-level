@@ -1,3 +1,5 @@
+Written before we began this project. For a detailed list of contributions, check the log at the top of main.cpp
+
 hello this is a test
 
 getting input is half the battle:

@@ -1,4 +1,11 @@
 /*
+
+OLDER VERSION! SEE MAIN.CPP FOR UPDATES
+
+
+
+
+
 Authors: Ryan Carlson & Marjorie Acheson
 Description: 
     This program prompts the user for a 2x2 matrix. It then finds the eigen values through det(A-λI) and solving this expression for the roots.
