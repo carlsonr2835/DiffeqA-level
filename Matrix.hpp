@@ -69,7 +69,7 @@ void Matrix<T>::find_eigen_values() {
         print_matrix(to_string(x1)+"-λ", to_string(x2), to_string(y1), to_string(y2)+"-λ");
         
     //find det(A - lambda*I)
-    cout << "\ndet(A - λI):\n\n";
+    cout << endl << "\ndet(A - λI):\n\n";
     cout << "\t(" << x1 << "-λ)(" << y2 << "-λ) - (" << x2 << ")(" << y1 << ")\n";
 
     //quatratic terms:
@@ -132,7 +132,22 @@ template <typename T>
 void Matrix<T>::find_eigen_vectors() {
     if (!complexEigenValues) { //real roots
         if(!repeatedEigenValues) {
-            //hopefully cheekily finding eigenvectors using slickboy moves
+            // printing things to be pretty
+            cout << "For value " << eigenValue1 << " you get: ";
+            print_matrix(to_string(x1-(eigenRootLeftSide+eigenRootRightSide)), to_string(x2), to_string(y1), to_string(y2-(eigenRootLeftSide+eigenRootRightSide)));
+            cout << " * <x,y> = <0,0>" << endl;
+
+            cout << endl << "For value " << eigenValue2 << " you get: ";
+            print_matrix(to_string(x1-(eigenRootLeftSide-eigenRootRightSide)), to_string(x2), to_string(y1), to_string(y2-(eigenRootLeftSide-eigenRootRightSide)));
+            cout << " * <x,y> = <0,0>" << endl;
+
+            cout << endl << "Now we have to solve out for x and y with the equations: " << endl;
+            cout << x1-(eigenRootLeftSide+eigenRootRightSide) << "x + " << x2 << "y = 0" << endl;
+            cout << x1-(eigenRootLeftSide-eigenRootRightSide) << "x + " << x2 << "y = 0" << endl;
+
+            cout << endl << "Assuming the value of x to be one, we get the vectors: ";
+
+            //hopefully cheekily coding eigenvectors using slickboy moves
             //found y using the equation Ax + By = 0
             //in this case, assuming x = 1, y = -A/B
             v1.push_back(1);
@@ -142,16 +157,43 @@ void Matrix<T>::find_eigen_vectors() {
             v2.push_back((-1)*(x2/(x1-(eigenRootLeftSide - eigenRootRightSide))));
 
         } else { // repeated
+            cout << "For value " << eigenValue1 << " you get: ";
+            print_matrix(to_string(x1-(eigenRootLeftSide+eigenRootRightSide)), to_string(x2), to_string(y1), to_string(y2-(eigenRootLeftSide+eigenRootRightSide)));
+            cout << " * <x,y> = <0,0>" << endl;
+
+            cout << endl << "Now we have to solve out for x and y with the equation: " << endl;
+            cout << x1-(eigenRootLeftSide+eigenRootRightSide) << "x + " << x2 << "y = 0" << endl;
+
             v1.push_back(1);
             v1.push_back((-1)*((x1-(eigenRootLeftSide + eigenRootRightSide))/x2));
+
+            cout << "Since we don't have a second value, we need to use the equation (A-λI)*<n,m> = <x,y>: " << endl;
+            print_matrix(to_string(x1-(eigenRootLeftSide+eigenRootRightSide)), to_string(x2), to_string(y1), to_string(y2-(eigenRootLeftSide+eigenRootRightSide)));
+            cout << " * <n,m> = <" << v1[0] << "," << v1[1] << ">" << endl;
+
+            cout << endl << "Assuming the value of n to be zero, we can find the second vector" << endl;
             
             v2.push_back(0);
-            v2.push_back(1);
+            v2.push_back(1/x2);
         }
 
     } else { //complex roots
+        cout << "For value " << eigenValue1 << " you get: ";
+        print_matrix(to_string(x1) + "-" + eigenValue1, to_string(x2), to_string(y1), to_string(y2) + "-" + eigenValue1);
+        cout << " * <x,y> = <0,0>" << endl;
+
+        cout << endl << "For value " << eigenValue2 << " you get: ";
+        print_matrix(to_string(x1) + "-" + eigenValue2, to_string(x2), to_string(y1), to_string(y2) + "-" + eigenValue2);
+        cout << " * <x,y> = <0,0>" << endl;
+
+        cout << endl << "Now we have to solve out for x and y with the equations: " << endl;
+        cout << "(" << to_string(x1) + "-" + eigenValue1 << ")x + " << x2 << "y = 0" << endl;
+        cout << "(" << to_string(y2) + "-" + eigenValue2 << ")x + " << x2 << "y = 0" << endl;
+
+        cout << endl << "Assuming the value of x to be one, we get the vectors: ";
+
     // assume the previous equation
-        // complex roots follow the appearance of -(x1 - a + bi)/x2  (condesing (x1-a) to a)
+        // complex roots follow the appearance of -(x1 - a + bi)/x2 
         // with this in mind, I need to account for several simplified cases
         // 1) normal      -> -(x1 - (a + bi))/x2    -(x1 + (a + bi))/x2
         // 2) a=x1        ->  (bi)/x2               -(x1 + (a + bi))/x2
@@ -252,7 +294,7 @@ void Matrix<T>::print_matrix(string X1, string X2, string Y1, string Y2) {
     for (int i = 0; i < 2 + (longestCol1 - lengths[2]); i ++) {cout << " ";}
     cout << Y2;
     for (int i = 0; i < longestCol2 - lengths[3]; i ++) {cout << " ";}
-    cout << " /" << endl;
+    cout << " /";
 }
 
 template <typename T>

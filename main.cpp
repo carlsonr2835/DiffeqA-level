@@ -23,6 +23,7 @@ Log:
     - 11/28 Maggie coded the brunt of the matrix printing code. It is still pretty basic and will only someone correctly print the initial A matrix. I will need to add input parameters so it's a more versative function.
     - 11/29 Maggie finished coding the print_matrix function with good formattting and now works for all inputs
     - 11/30 Ryan cleaned up the code, added some comments for clarification, and worked on making the ourput more readable
+    - 12/10 Maggie added explanation for eigen vectors in all possible cases
 
 Todo
 - way to work with fractions? (program is not precise for repeating fractions and may mark them incorrectly as complex/repeated, see #58 on the symbolic solution techniques)
@@ -75,13 +76,17 @@ int main() {
     m.setValues(x1, x2, y1, y2);
 
     // A matrix print
+    cout << endl << "This is your A Matrix:";
     m.print_matrix(to_string(x1), to_string(x2), to_string(y1), to_string(y2));
+    cout << endl;
     
     //eigenvalues
+    cout << endl << endl << "Now let's determine your eigen values using the following methods:";
     m.find_eigen_values();
     m.print_eigen_values();
 
     //eigenvectors
+    cout << endl << endl << "Using these eigen values, we can find the eigen vectors with the equation (A-λI)*<x,y> = <0,0>:" << endl;
     m.find_eigen_vectors();
     m.print_eigen_vectors();
 
