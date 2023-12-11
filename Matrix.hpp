@@ -310,7 +310,7 @@ void Matrix<T>::print_general_solution() {
         cout << "sin(" << to_string(eigenRootRightSide) << "t),";
         cout << to_string(eigenRootRightSide) << "cos(" << to_string(eigenRootRightSide) << "t)";
         cout << " + " << to_string(eigenRootLeftSide) << "sin(" << to_string(eigenRootRightSide) << "t)>\n\n";
-    }
+    } //gnarly output!
     else if (repeatedEigenValues) {
         cout << "Your solution:\n\n\ty(t) = c1e^(" << eigenValue1 << "t)<";
         cout << v1.at(0) << ","  << v1.at(1) << ">";
