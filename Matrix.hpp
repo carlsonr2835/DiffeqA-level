@@ -13,13 +13,13 @@ class Matrix {
     public:
         Matrix();
         void setValues(T X1, T X2, T Y1, T Y2);
-        void find_eigen_values();
-        void print_eigen_values();
-        void find_eigen_vectors();
-        void print_eigen_vectors();
-        void print_matrix(string X1, string X2, string Y1, string Y2);
-        void print_general_solution();
-        void solution_type();
+        void find_eigen_values(); //Ryan
+        void print_eigen_values(); //Ryan
+        void find_eigen_vectors(); //Maggie
+        void print_eigen_vectors(); //Maggie
+        void print_matrix(string X1, string X2, string Y1, string Y2); //Maggie
+        void print_general_solution(); //Ryan
+        void solution_type(); //Maggie
 
     private:
         //A matrix values
@@ -145,7 +145,7 @@ void Matrix<T>::find_eigen_vectors() {
             cout << x1-(eigenRootLeftSide+eigenRootRightSide) << "x + " << x2 << "y = 0" << endl;
             cout << x1-(eigenRootLeftSide-eigenRootRightSide) << "x + " << x2 << "y = 0" << endl;
 
-            cout << endl << "Assuming the value of x to be one, we get the vectors: ";
+            cout << endl << "Assuming the value of x to be one, we get the vectors: " << endl;
 
             //hopefully cheekily coding eigenvectors using slickboy moves
             //found y using the equation Ax + By = 0
@@ -190,7 +190,7 @@ void Matrix<T>::find_eigen_vectors() {
         cout << "(" << to_string(x1) + "-" + eigenValue1 << ")x + " << x2 << "y = 0" << endl;
         cout << "(" << to_string(y2) + "-" + eigenValue2 << ")x + " << x2 << "y = 0" << endl;
 
-        cout << endl << "Assuming the value of x to be one, we get the vectors: ";
+        cout << endl << "Assuming the value of x to be one, we get the vectors: " << endl;
 
     // assume the previous equation
         // complex roots follow the appearance of -(x1 - a + bi)/x2 
@@ -242,21 +242,21 @@ void Matrix<T>::print_eigen_vectors() {
     cout << endl;
     if(!complexEigenValues) {
         //v1
-        cout << "Eigen Value " << eigenValue1 << " has the vector: <";
+        cout << "\tEigen Value " << eigenValue1 << " has the vector: <";
         cout << v1.at(0) << ", ";
         cout << v1.at(1) << ">" << endl;
         //v2
-        cout << "Eigen Value " << eigenValue2 << " has the vector: <";
+        cout << "\tEigen Value " << eigenValue2 << " has the vector: <";
         cout << v2.at(0) << ", ";
         cout << v2.at(1) << ">" << endl;
     }
     else {
         //v1
-        cout << "Eigen Value " << eigenValue1 << " has the vector: <";
+        cout << "\tEigen Value " << eigenValue1 << " has the vector: <";
         cout << complexV1.at(0) << ", ";
         cout << complexV1.at(1) << ">" << endl;
         //v2
-        cout << "Eigen Value " << eigenValue2 << " has the vector: <";
+        cout << "\tEigen Value " << eigenValue2 << " has the vector: <";
         cout << complexV2.at(0) << ", ";
         cout << complexV2.at(1) << ">" << endl;
     }

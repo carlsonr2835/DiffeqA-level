@@ -7,8 +7,11 @@ Description:
     formats the eigenvalue results.
 
     The Matrix class uses the eigenvalues to find the eigen vectors, printing these for the user. It classifies the type of equilibrium
-    solution on the trace-determinant plane and also prints the general solution without solving for initial conditions. This is currently
-    not something we plan on adding as it is just algebra and is also hard to code.
+    solution on the trace-determinant plane and also prints the general solution without solving for initial conditions. This is not something
+    we added simply because solving algebraically would have been too hard to code.
+
+    Note: This program only accepts integers and decimals as input, so it is not 100% accurate with irrational numbers (see #58 on the 
+        symbolic solution techniques)
 
 Log:
     - 11/13 Ryan created this file and coded it to solve for real eigenvalues
@@ -22,15 +25,12 @@ Log:
     - 11/27 Maggie did a not good enough job at eigenvectors for complex roots. I have vastly improved it and the function even has the capabilities of simplifying the answer now. It has worked for all of the examples I could find. I have found ways to break the code (choosing random values to plug in the A matrix), but I'm not sure if it is supposed to work in this instance. I believe they should because I can work through the problems by hand just fine, so I will be working on this.
     - 11/28 Maggie coded the brunt of the matrix printing code. It is still pretty basic and will only someone correctly print the initial A matrix. I will need to add input parameters so it's a more versative function.
     - 11/29 Maggie finished coding the print_matrix function with good formattting and now works for all inputs
-    - 11/30 Ryan cleaned up the code, added some comments for clarification, and worked on making the ourput more readable
+    - 11/30 Ryan cleaned up the code, added some comments for clarification, and worked on making the output more readable
     - 12/10 Maggie added explanation for eigen vectors in all possible cases
-
-Todo
-- way to work with fractions? (program is not precise for repeating fractions and may mark them incorrectly as complex/repeated, see #58 on the symbolic solution techniques)
-- super awesome visuals?
+    - 12/11 Ryan went back in and rechecked each solution against the symbolic solutions techniques, fixed a few formatting issues
 
 Notes:
-    how 2 run:
+    run:
         open terminal->cd DiffeqA-level
         g++ main.cpp
         ./a.out or ./a.exe
@@ -86,7 +86,7 @@ int main() {
     m.print_eigen_values();
 
     //eigenvectors
-    cout << endl << endl << "Using these eigen values, we can find the eigen vectors with the equation (A-λI)*<x,y> = <0,0>:" << endl;
+    cout << endl << endl << "Using these eigen values, we can find the eigen vectors with the equation (A-λI)*<x,y> = <0,0>:\n\n";
     m.find_eigen_vectors();
     m.print_eigen_vectors();
 
